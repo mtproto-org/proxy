@@ -18,12 +18,12 @@
 5. `sudo apt-get install -y git`
 6. `npm install pm2 -g`
 7. `cd && mkdir mtproto && cd mtproto`
-8. `git clone https://github.com/mtproto-org/proxy-ru.git`
-9. `cd proxy-ru`
+8. `git clone https://github.com/mtproto-org/proxy.git`
+9. `cd proxy`
 10. `pm2 start mtproxy.js -i max`
 
 #### Дополнительные настройки
-Перейдите в папку, где лежит `mtproxy.js` (по умолчанию: `/root/mtproto/proxy-ru`) и выполните одну из команд:
+Перейдите в папку, где лежит `mtproxy.js` (по умолчанию: `/root/mtproto/proxy`) и выполните одну из команд:
 
 1. Запустить: `pm2 start mtproxy.js -i max`
 2. Перезапустить: `pm2 restart mtproxy.js`
