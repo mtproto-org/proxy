@@ -4,7 +4,7 @@
 ### Что необходимо?
 Для запуска собственного прокси-сервера, вам необходимо:
 
-1. Абсолютно чистый сервер с ОС Ubuntu 16.04 или старше
+1. Абсолютно чистый сервер с ОС Ubuntu 18.04 или старше
 2. Любой процессор/ОЗУ/диск (хотя бы: 1 ядро, 512 Мб ОЗУ, 5 ГБ диска)
 3. Открытый порт и отсутствие любого файерволла (желательно)
 
@@ -15,22 +15,29 @@
 2. `sudo apt-get upgrade`
 3. `sudo apt-get install -y nodejs`
 4. `sudo apt-get install -y npm`
-5. `sudo apt-get install -y git`
-6. `npm install pm2 -g`
-7. `cd && mkdir mtproto && cd mtproto`
-8. `git clone https://github.com/mtproto-org/proxy.git`
-9. `cd proxy`
-10. `pm2 start mtproxy.js -i max`
+5. `npm install pm2 -g`
+6. `cd && mkdir mtproxy && cd mtproxy`
+7. `npm install @mtproto-org/mtproxy`
+8. `cd /root/mtproxy/node_modules/@mtproto-org/mtproxy`
+9. `npm install`
+10. `touch i.js`
+11. `echo "const mtproxy = require('@mtproto-org/mtproxy');`
+12. `mtproxy()"  >>  i.js`
+13. `node i.js`, потом CTRL+C
+14. `pm2 start i.js -i max`
+
+[![Application Result](https://i.kxj.ru/scr/2019-06-06_17.32.00.png)
+
 
 #### Дополнительные настройки
-Перейдите в папку, где лежит `mtproxy.js` (по умолчанию: `/root/mtproto/proxy`) и выполните одну из команд:
+Перейдите в папку, где лежит `i.js` и выполните одну из команд:
 
-1. Запустить: `pm2 start mtproxy.js -i max`
-2. Перезапустить: `pm2 restart mtproxy.js`
-3. Выключить: `pm2 stop mtproxy.js`
+1. Запустить: `pm2 start i.js -i max`
+2. Перезапустить: `pm2 restart i.js`
+3. Выключить: `pm2 stop i.js`
 
 ### Что дальше? 
-В файле `config.json` находятся основные настройки прокси-сервера:
+В файле `mtproxy.js` находятся основные настройки прокси-сервера (137-ая строка):
 
 1. Порт для подключения: `2233`
 2. Секретный ключ: `11112222333344445555666677778888`
@@ -45,13 +52,13 @@
 5. `Добавить прокси`
 6. Выберите `MTPROTO`
 7. Хост - IP-адрес сервера или его `hostname`
-8. Порт - по умолчанию стоит `2233` или смените на свой (если меняли `config.json`)
+8. Порт - по умолчанию стоит `2233` или смените на свой (если меняли `mtproxy.js`)
 9. Ключ - введите ключ прокси-сервера (по умолчанию: `11112222333344445555666677778888`)
 10. Нажмите кнопку `Сохранить`
 11. Как только сервер добавится в список ваших прокси, выберите его и дождитесь статуса `Подключён`
 12. Готово!
 
-### Fossa
+### Ревизия от Fossa
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmtproto-org%2Fproxy.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmtproto-org%2Fproxy?ref=badge_large)
 
