@@ -11,33 +11,39 @@
 ### Как запустить?
 Для запуска собственного прокси-сервера, вам необходимо выполнять всё **строго по пунктам**. Если вы опытный разработчик, то можете сразу переходить к пункту "6" без лишней шумихи. Если нет, то инструкция ниже.
 
-1. `sudo apt-get update`
-2. `sudo apt-get upgrade`
-3. `sudo apt-get install -y nodejs`
-4. `sudo apt-get install -y npm`
-5. `npm install pm2 -g`
-6. `cd && mkdir mtproxy && cd mtproxy`
-7. `npm install @mtproto-org/mtproxy`
-8. `cd /root/mtproxy/node_modules/@mtproto-org/mtproxy`
-9. `npm install`
-10. `touch i.js`
-11. `echo "const mtproxy = require('@mtproto-org/mtproxy');`
-12. `mtproxy()"  >>  i.js`
-13. `node i.js`, потом CTRL+C
-14. `pm2 start i.js -i max`
+1. `curl -sL https://deb.nodesource.com/setup_12.x | bash - && sudo apt-get install nodejs npm`
+2. `npm install pm2 -g`
+3. `cd && mkdir mtproxy && cd mtproxy`
+4. `npm install @mtproto-org/mtproxy`
+5. `touch *.js`
+7. 
+```javascript
+const mtproxy = require('@mtproto-org/mtproxy')
+
+mtproxy()
+```
+8. `pm2 start *.js -i max`
 
 [![Application Result](https://i.kxj.ru/scr/2019-06-06_17.32.00.png)
 
 
 #### Дополнительные настройки
-Перейдите в папку, где лежит `i.js` и выполните одну из команд:
 
-1. Запустить: `pm2 start i.js -i max`
-2. Перезапустить: `pm2 restart i.js`
-3. Выключить: `pm2 stop i.js`
+1. Запустить: `pm2 start *.js -i max`
+2. Перезапустить: `pm2 restart *.js`
+3. Выключить: `pm2 stop *.js`
 
 ### Что дальше? 
-В файле `mtproxy.js` находятся основные настройки прокси-сервера (137-ая строка):
+```javascript
+const mtproxy = require('@mtproto-org/mtproxy')
+
+const options = {
+  port: 2233,
+  secret: '11112222333344445555666677778888'
+}
+
+mtproxy(options)
+```
 
 1. Порт для подключения: `2233`
 2. Секретный ключ: `11112222333344445555666677778888`
