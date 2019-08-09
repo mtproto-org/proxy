@@ -1,3 +1,6 @@
+# Не актуальная инструкция!
+**Используйте эту** - https://github.com/aliase-network/MTProtoProxy
+
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmtproto-org%2Fproxy.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmtproto-org%2Fproxy?ref=badge_shield)
 # MTProxy
 Готовый вариант запуска собственного прокси-сервера на базе протокола MTProto.
