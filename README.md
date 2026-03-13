@@ -1,96 +1,225 @@
-# Не актуальная инструкция!
-**Используйте эту** - https://github.com/aliase-network/MTProtoProxy
+#### Установка и настройка MTProto Proxy-сервера на базе Telemt
 
-## [Connect to our proxy!](https://t.me/proxy?server=proxy.mtproto.org&port=443&secret=11112222333344445555666677778888)
+**Автор: [Mifuru](https://t.me/mifuru) *([Блог Мифуру](https://t.me/mifurublog), [Заметки Мифуру](https://t.me/mifuruleaks))***. Актуальная ссылка: `https://text.is/mtprotoproxy`
 
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmtproto-org%2Fproxy.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmtproto-org%2Fproxy?ref=badge_shield)
-# MTProxy
-Готовый вариант запуска собственного прокси-сервера на базе протокола MTProto.
+*Мануал написан для новичков (в формате "шаг за шагом" с объяснениями), которые не разбираются в тонкостях настройки серверов, но очень хотят иметь бесперебойный и быстрый доступ к мессенджеру Telegram ввиду созданных внешних ограничений.*
 
-### Что необходимо?
-Для запуска собственного прокси-сервера, вам необходимо:
+- ✅ **Полная независимость**, никто не контролирует трафик
+- ✅ **Никаких зависимостей** при работе Proxy-сервера
+- ✅ **Работает без VPN**, Вы платите только за сервер
 
-1. Абсолютно чистый сервер с ОС Ubuntu 16.04 или старше
-2. Любой процессор/ОЗУ/диск (хотя бы: 1 ядро, 512 Мб ОЗУ, 5 ГБ диска)
-3. Свободный порт и отсутствие любого файерволла (желательно)
+###### Что нужно для развёртывания
 
-### Использование
+1. **Прямые руки**. Вы должны чётко следовать инструкции, чтобы разобраться в установке Proxy-сервера.
+2. Сервер с **Ubuntu 24.04 LTS** в странах Европы, США, Азии (любая страна, кроме страны Вашего проживания).
+3. Требования к серверу (найти сервер можно на [VDS.menu](https://vds.menu) или [Servers.expert](https://servers.Expert/)): 1 vCore, 1 GB RAM, 10 GB SSD/NVMe, **100 Mbps, полный Root-доступ**, никаких NAT или OVZ серверов (только KVM), администрирование не нужно, поддержка IPv6 не нужна, **выделенный IPv4-адрес**.
+4. Bitvise SSH-клиент (OC Windows 10/11), скачать по ссылке: [https://bitvise.com/ssh-client-download](https://bitvise.com/ssh-client-download)
 
-```javascript
-const mtproxy = require('@mtproto-org/mtproxy');
+###### Как установить свой Proxy-сервер
 
-mtproxy()
+Покупаем сервер у любого хостинг-провайдера, для примера - [VDSina](https://www.vdsina.com/?partner=p4u37d9qw512), тариф за 2.10 USD в месяц, локация - **Нидерланды** (не используем свою страну проживания, покупаем *исключительно* зарубежные VPS). Заказываем сервер с OC Ubuntu 24.04 LTS, логин и пароль - приходит на почту / в тикет службы поддержки спустя ~15 минут. Не передавайте логин и пароль - *это конфиденциальная информация*.
+
+!!! danger Действуем строго по инструкции. Выполняйте команды "по очереди". Не спешите с настройкой.
+
+Устанавливаем Bitvise на свой ПК (*если у Вас MacOS/Linux - разбирайтесь как подключиться к серверу самостоятельно*). Полученный логин и пароль вводим в Bitvise, как на фото ниже, затем жмём `Log In` (внизу слева), затем - открывается чёрное окно консоли для работы с сервером (если окно не открылось после подключения к серверу - нажмите `New terminal console` или пропингуйте IPv4-адрес сервера (возможно, Ваш провайдер блокирует доступ к IP-адресу сервера (при этом Вы не используете VPN), а это значит - нужно заменить хостинг-провайдера)).
+
+![](https://i.ibb.co/tT9W290t/image.png)
+
+В открытом окошке консоли прописываем команды (где указано `<IP>` - укажите IPv4-адрес Вашего сервера):
+
+```
+hostname server.<IP>.nip.io
+hostnamectl set-hostname server.<IP>.nip.io
+apt -y update && apt -y upgrade
 ```
 
-1. `sudo apt-get update`
-2. `sudo apt-get upgrade`
-3. `sudo apt-get install -y nodejs`
-4. `sudo apt-get install -y npm`
-5. `sudo apt-get install -y git`
-6. `npm install pm2 -g`
-7. `cd && mkdir mtproto && cd mtproto`
-8. `npm install @mtproto-org/mtproxy`
-9. `pm2 start *.js -i max`
+После прописывания последней команды - начинается процесс установки обновлений. Спокойно ждём, когда он закончится, занимает от 3 до 10 минут (в среднем). Не трогайте консоль, пока устанавливаются обновления. По окончанию - видим следующее (особое внимание на строчку `root@______:~#` - это значит, что нам доступен ввод команды, после завершения выполнения предыдущей, а значит - действуем дальше):
 
-#### Дополнительные настройки
-Перейдите в папку, где лежит `*.js` и выполните одну из команд:
+![](https://i.ibb.co/FbT3Szz3/image.png)
 
-1. Запустить: `pm2 start *.js -i max`
-2. Перезапустить: `pm2 restart *.js`
-3. Выключить: `pm2 stop *.js`
+Далее, выпускаем сертификат для IPv4-адреса нашего сервера (где указано `<IP>` - укажите IPv4-адрес Вашего сервера, где указано `<EMAIL>` - укажите Вашу почту):
 
-### Что дальше?
-По умолчанию:
-1. Порт для подключения: `2233`
-2. Секретный ключ: `11112222333344445555666677778888`
-Для того чтобы изменить его, передайте объект в mtproxy();
-
-- **Объект**
-  - `port`: (Number)
-  - `secret` : (String)
-
-Далее
-```javascript
-const mtproxy = require('@mtproto-org/mtproxy');
-
-mtproxy({
-    port: 1122,
-    secret: '11112222333344445555666677778888'
-})
+```
+mkdir proxy
+cd proxy
+git clone https://github.com/acmesh-official/acme.sh.git
+cd acme.sh
+./acme.sh --install -m <EMAIL> && ./acme.sh --issue -d <IP> --standalone --server letsencrypt --certificate-profile shortlived --days 6 --force
 ```
 
+Видим, что наш SSL-сертификат для IP-адреса выпущен:
 
-Вы можете поменять стандартный порт и секретный ключ, если хотите полной приватности. Рекомендуем сгенерировать секретный ключ из 32-х случайных чисел. Эти настройки установлены для тех, кому необходимо сразу запустить и пользоваться прокси-сервером.
+![](https://i.ibb.co/8nYHxz7s/image.png)
 
-### Как подключиться?
-1. Перейдите в `Настройки`
-2. Далее в `Продвинутые настройки`
-3. Далее в `Тип соединения`
-4. Выберите `Использовать собственный прокси`
-5. `Добавить прокси`
-6. Выберите `MTPROTO`
-7. Хост - IP-адрес сервера или его `hostname`
-8. Порт - ввежите порт прокси-сервера (по умолчанию: 2233)
-9. Ключ - введите ключ прокси-сервера (по умолчанию: `11112222333344445555666677778888`)
-10. Нажмите кнопку `Сохранить`
-11. Как только сервер добавится в список ваших прокси, выберите его и дождитесь статуса `Подключён`
-12. Готово!
+Далее, устанавливаем nginx (веб-сервер) для работы Proxy-сервера:
 
-### Fossa
+```
+cd
+apt -y install nginx
+```
 
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmtproto-org%2Fproxy.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmtproto-org%2Fproxy?ref=badge_large)
+После успешной установки, открываем Bitvise, жмём кнопку `New SFTP window`. Открывается окошко, вставляем путь к папке `/etc/nginx/sites-available` в SFTP-проводнике и жмём `Enter`, открывается папка, выбираем файл `default` при помощи ПКМ (правой кнопки мыши), жмём `Edit` (редактирование выполняется через встроенный в Windows Notepad, если не открывается - `Edit with` и ищем свой Notepad (`notepad.exe`):
 
-### Копирайт
-Разработано командой [MTProto.org](https://mtproto.org) и опубликовано согласно с условиями лицензии MIT License.
+![](https://i.ibb.co/CKw7yK4j/image.png)
 
-Copyright 2019, MTProto.org Team
+В открытом текстовом редакторе, вставляем свою конфигурацию (конфигурацию, которая уже была в файле, удаляем полностью и заменяем на свою со своим содержанием, где указано `<IP>` - укажите IPv4-адрес Вашего сервера, a указывать DNS-имя, которое раньше использовалось при настройке hostname - *не нужно, это чисто техническая настройка*):
 
-*Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:*
+```
+server {
+    listen <IP>:443 ssl;
+    server_name _;
 
-*The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.*
+    ssl_certificate /root/.acme.sh/<IP>_ecc/fullchain.cer;
+    ssl_certificate_key /root/.acme.sh/<IP>_ecc/<IP>.key;
 
-*THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.*
+    ssl_protocols TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers on;
 
+    location / {
+        root /var/www/html;
+        index index.nginx-debian.html;
+    }
+}
+```
 
-## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fmtproto-org%2Fproxy.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fmtproto-org%2Fproxy?ref=badge_large)
+Сохраняем изменённый файл конфигурации в своём текстовом редакторе (он автоматически подгрузится на сервер) и прописываем в окне консоли команду `nginx -t && nginx -s reload`, успешный результат выглядит следующим образом:
+
+![](https://i.ibb.co/gZ95hqfx/image.png)
+
+Заходим в браузер, просто вписываем `https://<IP>` (вместо `<IP>` - укажите IPv4-адрес Вашего сервера):
+
+![](https://i.ibb.co/Vc21jJTv/image.png)
+
+Как видим на фото выше - наш веб-сервер запущен, а сертификат для IPv4-адреса выпущен. Мы сделали свою "заглушку" для безопасного соединения с Proxy-сервером на базе протокола TLS v1.3 (вопреки заявлениям в СМИ о его "блокировках" в разных странах, на практике `TLSv1.3` отлично работает в *любых* условиях, но если Вы не уверены - замените `TLSv1.3` на `TLSv1.2` в файле `default` и перезапустите nginx командой `nginx -t && nginx -s reload`). Далее, пишем в консоли `crontab -e`, нажимаем `1` (nano), жмём `Enter`, затем вписываем в новую строку команду для автоматического перевыпуска SSL-сертификата для Вашего (где указано `<IP>` - укажите IPv4-адрес Вашего сервера):
+
+```
+0 12 * * 2,6 bash /root/proxy/acme.sh/acme.sh --issue -d <IP> --standalone --server letsencrypt --certificate-profile shortlived --days 6 --force
+```
+
+Жмём `CTRL+S` для сохранения, затем `CTRL+X` для выхода, следуем инструкции и устанавливаем Telemt:
+
+!!! note Почему Telemt?
+    Данный [проект c **открытым исходным кодом**](https://github.com/telemt/telemt) показал себя лучше всего при: 1) тестировании обхода блокировок; 2) качества соединения между пользователем и сервером; 3) настройке функционала Proxy-сервера. Альтернативные проекты устарели или не поддерживают необходимый для работы функционал.
+
+```
+cd
+cd proxy
+wget -qO- "https://github.com/telemt/telemt/releases/latest/download/telemt-$(uname -m)-linux-$(ldd --version 2>&1 | grep -iq musl && echo musl || echo gnu).tar.gz" | tar -xz
+mv telemt /bin
+chmod +x /bin/telemt
+mkdir /etc/telemt
+nano /etc/telemt/telemt.toml
+```
+
+В последней команде (`nano /etc/telemt/telemt.toml`) открывается текстовый редактор `nano`. Создаем черновик в любом текстовом редакторе, копируем в черновик конфигурацию (которая представлена ниже), заменяем `<IP>` на IPv4-адрес Вашего сервера, затем при помощи ПКМ (правой кнопки мыши) по окошку консоли Bitvise - вставляем свою конфигурацию (*или прописываем вручную*).
+
+Конфигурация файла `telemt.toml`:
+
+```
+[general]
+use_middle_proxy = false
+
+[general.modes]
+classic = false
+secure = false
+tls = true
+
+[server.api]
+enabled = false
+
+[censorship]
+tls_domain = "<IP>"
+
+[access.users]
+hello = "00000000000000000000000000000000"
+
+[server]
+port = 8443
+```
+
+> В официальной документации, предлагается установить в параметре `tls_domain` доменное имя `petrovich.ru`, однако - лучше использовать IPv4-адрес нашего сервера. По сути, мы используем IPv4-адрес - как лучшую альтернативу доменным именам, которые могут в любой момент перестать работать из-за блокировок или прекращения работы сайта с указанным доменным именем. Один раз настроили и пользуемся. Максимальная независимость от доменных имён и сайтов - залог стабильной работы Proxy-сервера в любых условиях.
+
+*Измените `00000000000000000000000000000000` на **любое 32-значное значение из цифр**, например: `11112222333344445555666677778888`. Важно, чтобы оно было **УНИКАЛЬНЫМ** (придумайте или сгенерируйте своё). Это Ваш специальный уникальный ключ для доступа к Proxy-серверу.*
+
+Жмём `CTRL+S` для сохранения, затем `CTRL+X` для выхода. Далее:
+
+```
+useradd -d /opt/telemt -m -r -U telemt
+chown -R telemt:telemt /etc/telemt
+nano /etc/systemd/system/telemt.service
+```
+
+В открывшемся окне `nano`-редактора вписываем (*без изменений*):
+
+```
+[Unit]
+Description=Telemt
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=telemt
+Group=telemt
+WorkingDirectory=/opt/telemt
+ExecStart=/bin/telemt /etc/telemt/telemt.toml
+Restart=on-failure
+LimitNOFILE=65536
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Жмём `CTRL+S` для сохранения, затем `CTRL+X` для выхода. Далее:
+
+```
+systemctl daemon-reload
+systemctl start telemt
+systemctl enable telemt
+journalctl -u telemt -n -g "links" --no-pager -o cat | tac
+```
+
+После выполнения команды `journalctl -u telemt -n -g "links" --no-pager -o cat | tac` - нам выводятся ссылка для подключение к Proxy-серверу (самая последняя в списке, который выводит ранее указанная команда). Скопируйте ссылку мышкой (путём её выделения), затем - отправьте в своё `Избранное` в мессенджере Telegram:
+
+![](https://i.postimg.cc/L8xLhtSw/image.png)
+
+###### Как подключиться к Proxy-серверу
+
+На примере Telegram Desktop, открываем `Избранное`, затем жмём на ссылку для подключения к нашему Proxy-серверу и подключаемся при помощи кнопки `Включить`. После нажатия кнопки `Включить` - проверьте соединение с Proxy-сервером (смотрите фото ниже).
+
+Для подключения к серверу с Android / iOS - откройте `Избранное` и подключитесь к Proxy-серверу, путём нажатия на ссылку (которая лежит в `Избранное`), затем `Подключить прокси`. **Лимитов по подключению к Proxy-серверу с множества устройств по Вашей ссылке - нет.**
+
+![](https://i.postimg.cc/xCCscfBG/image.png)
+
+##### Ура, Вы подключены к своему личному Proxy-серверу!
+
+В качестве благодарности, Вы можете сказать *Спасибо <3* за инструкцию при помощи:
+!~green;default;default;7; **[CryptoBot](https://t.me/send?start=IVLhnDNGOsp0), [xRocket](https://t.me/xrocket?start=inv_SUTeY9MsKpj9UH3) или USDT TRC-20 (TRON)**: `TPgNJNADwVY94fLGGsvQMmUtkJqWTTdyGC` ~!
+
+Теперь отвечаем на Ваши вопросы:
+
+1. **Обходит ли блокировки мой Proxy-сервер?** Да. В ходе проверок обнаружено, что в различных регионах, Proxy-сервер работает максимально стабильно, но могут быть незначительные обрывы связи (замечено только у 1 провайдера из 15 тестируемых, обрывы связи не мешают отправлять текст / фото / видео).
+
+2. **Если у меня всё, кроме определённых сайтов, заблокировано, тогда что нужно делать?** Попробуйте заменить значение `tls_domain`. Замените в `telemt.toml` (при помощи команды `nano /etc/telemt/telemt.toml` в консоли Bitvise) значение `tls_domain` на любое другое (например: `google.com` вместо IPv4-адреса Вашего сервера) и попробуйте подключиться (сохраните файл конфигурации при помощи `CTRL+S` -> `CTRL+X`, затем перезапустите сервер командой `systemctl restart telemt`, **новая ссылка для подключения будет доступна в выводе команды** `journalctl -u telemt -n -g "links" --no-pager -o cat | tac`, при этом - **старая ссылка, которая ранее была сгенерирована для подключения к Proxy-серверу, работать НЕ БУДЕТ** у ВСЕХ пользователей и устройств, которые ранее были подключены к Proxy-серверу по старой ссылке).
+
+3. **С кем можно делиться моим Proxy-сервером?** С самим собой (в рамках своих личных устройств), с родственниками, с Вашими важными друзьями / коллегами. Не делитесь ссылкой на подключение со случайными людьми без нужды. Не делитесь ссылкой на Proxy-сервер в публичном пространстве, поскольку случайные пользователи могут создавать излишнюю нагрузку на Proxy-сервер (урезая скорость скачивания / загрузки / отправки сообщений/файлов своим присутствием).
+
+4. **Какая скорость подключения к Proxy-серверу?** При подключении с домашнего интернета со скоростью 100 Mbit/s, при условии, что у Вашего сервера есть подключение к Интернету со скоростью 100 Mbit/s - скорость Вашего подключения, при скачке тяжелых видео / файлов, составляет ~30-80 Mbit/s. Этого достаточно для быстрой загрузки/отправки сообщений, фото, аудио (голосовые сообщения), видео ("кружочки") и прочих файлов.
+
+5. **Можно ли использовать сервер для любых других нужд?** Да, если Вы хотите создать свой личный VPN-сервер, лучший вариант для подобного, использование [3X-UI](https://github.com/MHSanaei/3x-ui/wiki). Если Вы разобрались с этой инструкцией, то разберетесь с [3X-UI](https://github.com/MHSanaei/3x-ui/wiki). [3X-UI](https://github.com/MHSanaei/3x-ui/wiki) может работать независимо от Telemt, который настраивался в данной инструкции. Ссылки на инструкцию по настройке [3X-UI](https://github.com/MHSanaei/3x-ui/wiki) Вы можете найти в Google, покупать отдельный сервер для этого не нужно, используйте тот, на котором настраивали Telemt. 
+
+6. **Могу ли я добавить рекламу в свой Proxy-сервер?** Да, ознакомьтесь с принципом работы `ad_tag` на [странице проекта Telemt](https://github.com/telemt/telemt).
+
+7. **Как мне изменить настройки сервера под себя?** Вы можете легко изменить настройки Вашего Proxy-сервера и настроить его "под себя", если ознакомитесь с документацией на [странице проекта Telemt](https://github.com/telemt/telemt).
+
+8. **Может ли кто-то читать мои переписки?** Нет, трафик шифруется, никто не сможет прочитать Ваши переписки.
+
+9. **Могу ли я читать чужие переписки?** Нет, трафик шифруется, никто не сможет прочитать чужие переписки.
+
+10. **Могу ли я изменить принцип работы Telemt, чтобы читать чужие переписки?** Нет.
+
+**Автор: [Mifuru](https://t.me/mifuru) *([Блог Мифуру](https://t.me/mifurublog), [Заметки Мифуру](https://t.me/mifuruleaks))***. Актуальная ссылка: `https://text.is/mtprotoproxy`
